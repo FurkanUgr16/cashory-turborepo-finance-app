@@ -1,40 +1,34 @@
 import { expo } from "@better-auth/expo";
-import { createDb } from "@cashory/db";
+import { db } from "@cashory/db";
 import * as schema from "@cashory/db/schema/auth";
 import { env } from "@cashory/env/server";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 
-export function createAuth() {
-  const db = createDb();
+export const auth = betterAuth({
+  database: drizzleAdapter(db, {
+    provider: "pg",
 
-  return betterAuth({
-    database: drizzleAdapter(db, {
-      provider: "pg",
+    schema: schema,
+  }),
+  trustedOrigins: [
+    env.CORS_ORIGIN,
 
-      schema: schema,
-    }),
-    trustedOrigins: [
-      env.CORS_ORIGIN,
-
-      "cashory://",
-      "exp://",
-      "http://localhost:8081",
-    ],
-    emailAndPassword: {
-      enabled: true,
+    "cashory://",
+    "exp://",
+    "http://localhost:8081",
+  ],
+  emailAndPassword: {
+    enabled: true,
+  },
+  secret: env.BETTER_AUTH_SECRET,
+  baseURL: env.BETTER_AUTH_URL,
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true,
+      httpOnly: true,
     },
-    secret: env.BETTER_AUTH_SECRET,
-    baseURL: env.BETTER_AUTH_URL,
-    advanced: {
-      defaultCookieAttributes: {
-        sameSite: "none",
-        secure: true,
-        httpOnly: true,
-      },
-    },
-    plugins: [expo()],
-  });
-}
-
-export const auth = createAuth();
+  },
+  plugins: [expo()],
+});
