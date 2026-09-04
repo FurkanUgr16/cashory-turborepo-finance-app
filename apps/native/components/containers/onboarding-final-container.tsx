@@ -10,6 +10,7 @@ import { useThemeColor, useToast } from "heroui-native";
 import { ONBOARDING_FONT_FAMILY } from "@/lib/const/onboarding-typography";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import AuthRow from "../base/auth-row";
 
 type Props = {
   imageSource: ImageSourcePropType;
@@ -114,6 +115,67 @@ export default function OnboardingFinalContainer({
               place
             </Text>
           </View>
+          <AuthRow
+            label="Login with Email"
+            onPress={() => router.push("/sign-in")}
+            backgroundColor={rowBackgroundColor}
+            textColor={rowTextColor}
+            icon={
+              <View
+                className="w-8 h-8 rounded-full items-center justify-center"
+                style={{ backgroundColor: actionIconBackgroundColor }}
+              >
+                <Ionicons
+                  name="arrow-forward"
+                  size={20}
+                  color={actionIconColor}
+                />
+              </View>
+            }
+          />
+          {socialProviders.map((provider) => (
+            <AuthRow
+              key={provider.provider}
+              label={provider.label}
+              onPress={() => handleSocialPress(provider.provider)}
+              backgroundColor={rowBackgroundColor}
+              textColor={rowTextColor}
+              icon={
+                <Ionicons
+                  name={provider.iconName}
+                  size={provider.iconSize}
+                  color={provider.iconColor}
+                />
+              }
+            />
+          ))}
+
+          <View className="mt-2 flex-row items-center">
+            <View
+              className="h-px flex-1"
+              style={{ backgroundColor: separatorColor }}
+            />
+            <Text
+              className="px-4 text-body-sm leading-3.75"
+              style={{
+                fontFamily: ONBOARDING_FONT_FAMILY.regular,
+                color: mutedTextColor,
+              }}
+            >
+              Or Register with
+            </Text>
+            <View
+              className="h-px flex-1"
+              style={{ backgroundColor: separatorColor }}
+            />
+          </View>
+          <AuthRow
+            label="Register with Email"
+            onPress={() => router.push("/sign-up")}
+            backgroundColor={rowBackgroundColor}
+            textColor={rowTextColor}
+            icon={<Ionicons name="mail" size={28} color={textColor} />}
+          />
         </ScrollView>
       </View>
     </View>

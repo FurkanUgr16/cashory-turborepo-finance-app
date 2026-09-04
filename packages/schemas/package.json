@@ -1,0 +1,19 @@
+{
+  "name": "@cashory/schema",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@cashory/config": "workspace:*",
+    "typescript": "^6.0.3"
+  }
+}
