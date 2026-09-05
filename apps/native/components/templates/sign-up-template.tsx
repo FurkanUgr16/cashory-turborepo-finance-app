@@ -19,7 +19,6 @@ import {
   Input,
   InputGroup,
   TextField,
-  useThemeColor,
   useToast,
 } from "heroui-native";
 import { useAuthTheme } from "@/hooks/use-auth-theme";

@@ -39,3 +39,33 @@ export const useSignUp = () => {
     },
   });
 };
+
+export const useSignIn = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      email,
+      password,
+    }: {
+      email: string;
+      password: string;
+    }) => {
+      const res = await authClient.signIn.email({
+        email,
+        password,
+      });
+      if (res.error) throw new Error(res.error.message || "Failed to sign in");
+
+      return res.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.auth.all,
+      });
+    },
+    onError: (e) => {
+      throw new Error(e.message || "Something went wrong during signing in");
+    },
+  });
+};
