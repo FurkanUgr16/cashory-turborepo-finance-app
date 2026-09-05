@@ -21,6 +21,35 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  user: {
+    additionalFields: {
+      onBoardingCompleted: {
+        type: "boolean",
+        required: false,
+        input: true,
+      },
+      country: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      phone: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      image: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      currnecy: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+    },
+  },
   secret: env.BETTER_AUTH_SECRET,
   baseURL: env.BETTER_AUTH_URL,
   advanced: {

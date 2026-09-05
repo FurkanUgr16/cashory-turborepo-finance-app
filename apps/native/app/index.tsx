@@ -21,7 +21,11 @@ const Page = () => {
     if (!isPending && session?.data?.user) {
       const user = session.data.user;
 
-      // todo redirect if user is logged in
+      if (user.onBoardingCompleted) {
+        router.replace("/(drawer)/(tabs)/index");
+      } else {
+        router.replace("/onboarding");
+      }
     }
   }, [session, isPending, router]);
 
