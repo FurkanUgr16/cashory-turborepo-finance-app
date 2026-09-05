@@ -22,7 +22,7 @@ const Page = () => {
       const user = session.data.user;
 
       if (user.onBoardingCompleted) {
-        router.replace("/(drawer)/(tabs)/index");
+        router.replace("/(drawer)/(tabs)");
       } else {
         router.replace("/onboarding");
       }

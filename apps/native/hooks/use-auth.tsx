@@ -1,11 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth-client";
 import { queryKeys } from "@/lib/query-keys";
+import { UpdateProfileData } from "@/lib/api-types";
+import { error } from "better-auth/api";
 
 export const useAuthSession = () => {
   return useQuery({
-    queryKey: queryKeys.auth.session,
-    queryFn: () => authClient.getSession(),
+    queryKey: queryKeys.auth.session(),
+    queryFn: async () => await authClient.getSession(),
     staleTime: 1000 * 60 * 5,
   });
 };
@@ -34,9 +36,6 @@ export const useSignUp = () => {
         queryKey: queryKeys.auth.all,
       });
     },
-    onError: (e) => {
-      throw new Error(e.message || "Something went wrong during signing up");
-    },
   });
 };
 
@@ -64,8 +63,60 @@ export const useSignIn = () => {
         queryKey: queryKeys.auth.all,
       });
     },
-    onError: (e) => {
-      throw new Error(e.message || "Something went wrong during signing in");
+  });
+};
+
+export const useUpdateProfile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: UpdateProfileData) => {
+      const { country, image, name, phone } = data;
+      const res = await authClient.updateUser({
+        country: country?.name,
+        image,
+        name,
+        phone,
+      });
+
+      if (res.error)
+        throw new Error(res.error.message || "Failed to update profile");
+
+      return res.data;
+    },
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.auth.session(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.user.profile(),
+      });
+    },
+  });
+};
+
+export const useCompleteOnboarding = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const res = await authClient.updateUser({
+        onBoardingCompleted: true,
+      });
+
+      if (res.error)
+        throw new Error(res.error.message || "Failed to complete onboarding");
+
+      return res.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.auth.session(),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.user.onboarding(),
+      });
     },
   });
 };

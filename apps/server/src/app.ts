@@ -4,7 +4,7 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { auth } from "@cashory/auth";
 
-export const app = new Hono()
+const app = new Hono()
   .use(logger())
   .use(
     "/*",
@@ -29,5 +29,7 @@ export const app = new Hono()
   .notFound((c) => {
     return c.json({ error: "Not Found" }, 404);
   });
+
+export default app;
 
 export type AppType = typeof app;

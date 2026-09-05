@@ -16,6 +16,7 @@
     "@better-auth/expo": "catalog:",
     "@cashory/auth": "workspace:*",
     "@cashory/env": "workspace:*",
+    "@cashory/schema": "workspace:*",
     "@expo-google-fonts/open-sans": "^0.4.2",
     "@expo/metro-runtime": "~57.0.12",
     "@expo/vector-icons": "^15.1.1",
@@ -30,6 +31,7 @@
     "expo-font": "~57.0.1",
     "expo-haptics": "~57.0.1",
     "expo-image": "^57.0.4",
+    "expo-image-picker": "^57.0.16",
     "expo-linking": "~57.0.7",
     "expo-network": "~57.0.1",
     "expo-router": "~57.0.15",
@@ -56,8 +58,7 @@
     "tailwind-variants": "^3.3.1",
     "tailwindcss": "^4.3.3",
     "uniwind": "^1.11.0",
-    "zod": "catalog:",
-    "@cashory/schema": "workspace:*"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@cashory/config": "workspace:*",
