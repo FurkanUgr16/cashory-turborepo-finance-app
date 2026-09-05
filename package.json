@@ -29,6 +29,7 @@
   "dependencies": {
     "@cashory/env": "workspace:*",
     "dotenv": "catalog:",
+    "expo-status-bar": "^57.0.1",
     "zod": "catalog:"
   },
   "devDependencies": {
