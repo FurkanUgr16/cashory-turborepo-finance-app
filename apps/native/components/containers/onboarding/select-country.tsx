@@ -100,24 +100,28 @@ export default function SelectCountry({ onBack, onNext }: Props) {
                 fontFamily: ONBOARDING_FONT_FAMILY.regular,
                 color: colors.textSecondary,
               }}
-            ></Text>
+            >
+              Choose your country
+            </Text>
           </View>
         </View>
 
-        <SearchField
-          value={searchQuery}
-          onChange={(value) => setSearchQuery(value)}
-        >
-          <SearchField.Group>
-            <SearchField.SearchIcon
-              iconProps={{
-                size: 20,
-              }}
-            />
-            <SearchField.Input className="h-17.5 rounded-[15px]" />
-            <SearchField.ClearButton />
-          </SearchField.Group>
-        </SearchField>
+        <View className="mt-5.5" style={{ width: contentWidth }}>
+          <SearchField
+            value={searchQuery}
+            onChange={(value) => setSearchQuery(value)}
+          >
+            <SearchField.Group>
+              <SearchField.SearchIcon
+                iconProps={{
+                  size: 20,
+                }}
+              />
+              <SearchField.Input className="h-17.5 rounded-[15px]" />
+              <SearchField.ClearButton />
+            </SearchField.Group>
+          </SearchField>
+        </View>
 
         <RadioGroup
           value={selectedCode}

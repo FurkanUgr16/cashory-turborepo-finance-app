@@ -5,7 +5,7 @@ import { useThemeColor } from "heroui-native";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Drawer } from "expo-router/drawer";
 import { Ionicons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { Link } from "expo-router/build";
 import { Pressable } from "react-native-gesture-handler";
 
 export default function DrawerLayout() {

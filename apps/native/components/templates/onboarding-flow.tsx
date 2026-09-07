@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { useRouter } from "expo-router/build";
 import SelectCountry from "../containers/onboarding/select-country";
 import { useState } from "react";
 import ProfileSetup, {
@@ -6,6 +6,7 @@ import ProfileSetup, {
 } from "../containers/onboarding/profile-setup";
 import { useCompleteOnboarding, useUpdateProfile } from "@/hooks/use-auth";
 import { useToast } from "heroui-native";
+import { SuccessModal } from "../containers/onboarding/success-modal";
 
 type OnboardingStep = "country" | "profile" | "success";
 
@@ -39,6 +40,11 @@ export default function OnboardingFlow({
   const handleSelectCountry = (country: Country) => {
     setSelectedCountry(country);
     setCurrentStep("profile");
+  };
+
+  const handleSuccessModalClose = () => {
+    setShowSuccessModel(false);
+    onComplete();
   };
 
   const handleBack = () => {
@@ -75,7 +81,10 @@ export default function OnboardingFlow({
   return (
     <>
       {currentStep === "country" && (
-        <SelectCountry onNext={handleSelectCountry} onBack={() => {}} />
+        <SelectCountry
+          onNext={handleSelectCountry}
+          onBack={() => router.back()}
+        />
       )}
 
       {currentStep === "profile" && (
@@ -86,6 +95,11 @@ export default function OnboardingFlow({
           onBack={handleBack}
         />
       )}
+
+      <SuccessModal
+        onClose={handleSuccessModalClose}
+        visible={showSuccessModel}
+      />
     </>
   );
 }

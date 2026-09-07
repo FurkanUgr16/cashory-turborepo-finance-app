@@ -1,10 +1,11 @@
 import { View, Text } from "react-native";
 import React from "react";
+import Container from "@/components/containers/container";
 
 export default function HomePage() {
   return (
-    <View>
+    <Container>
       <Text>HomePage</Text>
-    </View>
+    </Container>
   );
 }

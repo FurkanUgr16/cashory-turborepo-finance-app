@@ -1,4 +1,4 @@
-import { CashoryUser } from "@/app/types/auth";
+import { CashoryUser } from "@/types/auth";
 import { Country } from "@/components/templates/onboarding-flow";
 
 export type ApiError = {
