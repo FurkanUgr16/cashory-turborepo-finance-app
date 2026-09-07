@@ -33,6 +33,7 @@
       "@react-native-community/datetimepicker",
       "expo-sharing",
       "expo-router",
+      "expo-image-picker",
       [
         "expo-splash-screen",
         {

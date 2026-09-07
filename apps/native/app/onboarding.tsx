@@ -1,7 +1,7 @@
-import { View, Text } from "react-native";
 import { useEffect } from "react";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router/build";
 import { useAuthSession } from "@/hooks/use-auth";
+import OnboardingFlow from "@/components/templates/onboarding-flow";
 
 export default function Onboarding() {
   const params = useLocalSearchParams();
@@ -20,8 +20,6 @@ export default function Onboarding() {
   };
 
   return (
-    <View>
-      <Text>Onboarding</Text>
-    </View>
+    <OnboardingFlow userData={userData} onComplete={() => router.back()} />
   );
 }

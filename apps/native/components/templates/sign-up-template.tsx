@@ -11,7 +11,7 @@ import { useRef, useMemo, useState } from "react";
 import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { Controller, useForm } from "react-hook-form";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router } from "expo-router/build";
 import { Ionicons } from "@expo/vector-icons";
 import { ONBOARDING_FONT_FAMILY } from "@/lib/const/onboarding-typography";
 import {
