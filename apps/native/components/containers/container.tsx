@@ -12,9 +12,9 @@ type Props = AnimatedProps<ViewProps> & {
 };
 
 export default function Container(props: PropsWithChildren<Props>) {
-  const { className, isScrollable, scrollViewProps, children } = props;
+  const { className, isScrollable, scrollViewProps, children, ...rest } = props;
   return (
-    <AnimatedView className={cn("flex-1 bg-background", className)} {...props}>
+    <AnimatedView className={cn("flex-1 bg-background", className)} {...rest}>
       {isScrollable ? (
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
