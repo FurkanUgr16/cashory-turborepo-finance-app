@@ -66,6 +66,25 @@ export const useSignIn = () => {
   });
 };
 
+export const useSignOut = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const res = await authClient.signOut();
+
+      if (res.error) throw new Error(res.error.message || "Failed to sign out");
+
+      return res.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.auth.all,
+      });
+    },
+  });
+};
+
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
 
