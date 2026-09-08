@@ -1,10 +1,5 @@
-import { View, Text } from "react-native";
-import React from "react";
+import ReportsTemplate from "@/components/templates/report-template";
 
 export default function Reports() {
-  return (
-    <View>
-      <Text>Reports</Text>
-    </View>
-  );
+  return <ReportsTemplate />;
 }
