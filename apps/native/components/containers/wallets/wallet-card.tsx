@@ -1,17 +1,32 @@
-import { View, Text } from "react-native";
 import React from "react";
-import { Button, Card, Surface, useThemeColor } from "heroui-native";
-import { Category } from "@cashory/schema/category-schema";
+import { View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Button, Card, useThemeColor, Surface } from "heroui-native";
+import type { Wallet } from "@cashory/schema";
 
-export default function CategoryItem({
-  item,
-  onDelete,
-}: {
-  item: Category;
+interface WalletCardProps {
+  wallet: Wallet;
   onDelete: (id: string) => void;
-}) {
+}
+
+export function WalletCard({ wallet, onDelete }: WalletCardProps) {
   const dangerColor = useThemeColor("danger");
+
+  const getTypeIcon = (walletType: string) => {
+    switch (walletType) {
+      case "bank":
+        return "🏠";
+      case "credit":
+        return "💳";
+      case "cash":
+        return "💰";
+      case "mobile":
+        return "📱";
+      default:
+        return "💼";
+    }
+  };
+
   return (
     <Card
       variant="secondary"
@@ -23,29 +38,31 @@ export default function CategoryItem({
             variant="tertiary"
             className="w-10 h-10 rounded-[20px] items-center justify-center bg-brand-white dark:bg-dark-charcoal-green"
           >
-            <Text className="text-h4 font-bold">{item.emoji || "🏷️"}</Text>
+            <Text className="text-h4 font-bold">
+              {getTypeIcon(wallet.type)}
+            </Text>
           </Surface>
           <View className="flex-col">
             <Card.Title
               className="text-[16px] leading-5 text-brand-black dark:text-brand-white"
               style={{ fontFamily: "PlusJakartaSans_700Bold" }}
             >
-              {item.name}
+              {wallet.name} {wallet.isDefault && "⭐"}
             </Card.Title>
             <Card.Description
-              className="text-body-sm leading-4 text-brand-silver mt-1"
+              className="text-body-sm leading-4 text-brand-silver mt-1 capitalize"
               style={{ fontFamily: "PlusJakartaSans_500Medium" }}
             >
-              {item.type === "expense" ? "Expense" : "Income"}
+              {wallet.type} • {wallet.currency}
             </Card.Description>
           </View>
         </View>
-        {!item.isSystem && (
+        {!wallet.isSystem && (
           <Button
             variant="ghost"
             size="sm"
             isIconOnly
-            onPress={() => onDelete(item.id)}
+            onPress={() => onDelete(wallet.id)}
           >
             <Ionicons name="trash-outline" size={20} color={dangerColor} />
           </Button>

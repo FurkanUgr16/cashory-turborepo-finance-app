@@ -16,4 +16,10 @@ export const queryKeys = {
     list: (type?: "income" | "expense") =>
       ["categories", "list", type] as const,
   },
+  wallet: {
+    all: ["wallets"] as const,
+    list: () => ["wallets", "list"] as const,
+    details: (id: string) => ["wallets", "details", id] as const,
+    default: () => ["wallets", "default"] as const,
+  },
 };
