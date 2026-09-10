@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { auth } from "@cashory/auth";
+import { categoryRoutes } from "./routes/category.routes";
 
 const app = new Hono()
   .use(logger())
@@ -16,6 +17,7 @@ const app = new Hono()
     }),
   )
   .on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw))
+  .route("/api/category", categoryRoutes)
   .onError((err, c) => {
     console.error("Server Errror", err);
     return c.json(

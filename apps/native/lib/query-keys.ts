@@ -1,3 +1,5 @@
+import type { ListCategoryQuery } from "@cashory/schema";
+
 export const queryKeys = {
   auth: {
     all: ["auth"] as const,
@@ -8,5 +10,10 @@ export const queryKeys = {
     all: ["user"] as const,
     profile: () => ["user", "profile"] as const,
     onboarding: () => ["user", "onboarding"] as const,
+  },
+  categories: {
+    all: ["categories"] as const,
+    list: (type?: "income" | "expense") =>
+      ["categories", "list", type] as const,
   },
 };

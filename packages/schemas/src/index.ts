@@ -1,6 +1,2 @@
-export {
-  signinSchema,
-  signupSchema,
-  type SignInType,
-  type SignUpType,
-} from "./auth-schema";
+export * from "./auth-schema";
+export * from "./category.schema";
