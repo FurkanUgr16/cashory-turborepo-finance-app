@@ -6,7 +6,10 @@ import {
   integer,
   index,
 } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { user } from "./auth";
+import { budget } from "./budget";
+import { transaction } from "./transaction";
 
 export const category = pgTable(
   "category",
@@ -28,3 +31,12 @@ export const category = pgTable(
     index("category_type_idx").on(table.type),
   ],
 );
+
+export const categoryRelations = relations(category, ({ one, many }) => ({
+  user: one(user, {
+    fields: [category.userId],
+    references: [user.id],
+  }),
+  transactions: many(transaction),
+  budgets: many(budget),
+}));

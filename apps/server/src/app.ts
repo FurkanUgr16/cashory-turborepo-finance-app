@@ -5,6 +5,8 @@ import { logger } from "hono/logger";
 import { auth } from "@cashory/auth";
 import { categoryRoutes } from "./routes/category.routes";
 import { walletRoutes } from "./routes/wallet.routes";
+import { budgetRoutes } from "./routes/budget.routes";
+import { transactionRoutes } from "./routes/transaction.routes";
 
 const app = new Hono()
   .use(logger())
@@ -23,6 +25,8 @@ const app = new Hono()
   })
   .route("/api/category", categoryRoutes)
   .route("/api/wallet", walletRoutes)
+  .route("/api/budget", budgetRoutes)
+  .route("/api/transaction", transactionRoutes)
   .onError((err, c) => {
     console.error("Server Errror", err);
     return c.json(

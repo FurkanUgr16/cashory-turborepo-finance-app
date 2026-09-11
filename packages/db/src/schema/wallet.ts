@@ -6,6 +6,8 @@ import {
   boolean,
   index,
 } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+import { transaction } from "./transaction";
 import { user } from "./auth";
 
 export const wallet = pgTable(
@@ -35,3 +37,11 @@ export const wallet = pgTable(
   },
   (table) => [index("wallet_userId_idx").on(table.userId)],
 );
+
+export const walletRelations = relations(wallet, ({ one, many }) => ({
+  user: one(user, {
+    fields: [wallet.userId],
+    references: [user.id],
+  }),
+  transactions: many(transaction),
+}));

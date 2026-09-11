@@ -10,11 +10,7 @@ import {
   updateWallet,
 } from "@/services/wallet.services";
 
-import {
-  walletSchema,
-  createWalletSchema,
-  updateWalletSchema,
-} from "@cashory/schema";
+import { createWalletSchema, updateWalletSchema } from "@cashory/schema";
 
 export const walletRoutes = new Hono()
   .use(authMiddleware)

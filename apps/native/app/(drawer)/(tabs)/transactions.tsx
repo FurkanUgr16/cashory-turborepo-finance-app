@@ -1,10 +1,6 @@
 import { View, Text } from "react-native";
-import React from "react";
+import TransactionTemplate from "@/components/templates/transaction-template";
 
 export default function Transaction() {
-  return (
-    <View>
-      <Text>Transaction</Text>
-    </View>
-  );
+  return <TransactionTemplate />;
 }
