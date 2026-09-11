@@ -34,6 +34,13 @@ function StackLayout() {
       <Stack.Screen name="notifications" />
       <Stack.Screen name="invoice/add" />
       <Stack.Screen name="invoice/[id]" />
+
+      <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+
+      <Stack.Screen
+        name="modal"
+        options={{ title: "Modal", presentation: "modal" }}
+      />
     </Stack>
   );
 }
