@@ -56,15 +56,15 @@ export const useTransactionId = (id: string) => {
   });
 };
 
-export const useTransactionSummary = (params: TransactionSummaryQuery) => {
+export const useTransactionSummary = (params?: TransactionSummaryQuery) => {
   return useQuery({
     queryKey: queryKeys.transactions.summary(),
     queryFn: async () => {
       const response = await apiClient.api.transaction.summary.$get({
         query: {
-          ...(params.walletId ? { walletId: params.walletId } : {}),
-          ...(params.startDate ? { startDate: params.startDate } : {}),
-          ...(params.endDate ? { endDate: params.endDate } : {}),
+          ...(params?.walletId ? { walletId: params.walletId } : {}),
+          ...(params?.startDate ? { startDate: params.startDate } : {}),
+          ...(params?.endDate ? { endDate: params.endDate } : {}),
         },
       });
 

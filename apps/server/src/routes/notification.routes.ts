@@ -25,7 +25,11 @@ export const notificationRoutes = new Hono()
     const user = c.get("user");
     const data = c.req.valid("json");
     const notification = await createNotification(user.id, data);
-    return c.json(notification);
+
+    if (!notification)
+      return c.json({ error: "Failed to create notification" }, 500);
+
+    return c.json({ data: notification });
   })
   .patch("mark-all-read", async (c) => {
     const user = c.get("user");

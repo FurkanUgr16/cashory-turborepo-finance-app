@@ -1,17 +1,42 @@
-import { View, Text, ScrollView, Image, Pressable } from "react-native";
-import Container from "@/components/containers/container";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
+import React, { useMemo, useState } from "react";
+import { Container } from "@/components/container";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAuthSession } from "@/hooks/use-auth";
 import { ONBOARDING_FONT_FAMILY } from "@/lib/const/onboarding-typography";
-import { Link } from "expo-router";
-import { useAuthTheme } from "@/hooks/use-auth-theme";
-import { GeneralSearch } from "@/components/ui/icons/general.search";
+import { Link, router } from "expo-router";
+import { GeneralSearch } from "@/components/ui/icons/general-search";
 import { GeneralAlarm } from "@/components/ui/icons/general-alarm";
 import CashoryCardBalance from "@/components/containers/cashory-card-balance";
 import CashoryIncomeExpense from "@/components/containers/cashory-income-expense";
-import { useState } from "react";
 import CashoryBudgetPlanCard from "@/components/containers/cashory-plan-budget-card";
+import { useThemeColors } from "@/lib/use-theme-colors";
+import { useGetWallets } from "@/hooks/use-wallets";
+import { useTransactionSummary } from "@/hooks/use-transaction";
+import { useInvoices } from "@/hooks/use-invoice";
 import CashoryInvoiceCard from "@/components/containers/cashory-invoice-card";
+import { format } from "date-fns";
+import { InvoiceStatus } from "@/types/invoice";
+
+const mapStatus = (status: string): InvoiceStatus => {
+  switch (status) {
+    case "paid":
+      return "Paid";
+    case "overdue":
+      return "Overdue";
+    case "cancelled":
+      return "Cancel";
+    default:
+      return "Due";
+  }
+};
 
 const MONTH_ABBRS = [
   "Jan",
@@ -26,21 +51,83 @@ const MONTH_ABBRS = [
   "Oct",
   "Nov",
   "Dec",
-] as const;
+];
 
-export type MonthAbbr = (typeof MONTH_ABBRS)[number];
-
-export default function HomePage() {
+export default function Home() {
+  const insets = useSafeAreaInsets();
   const currentMonthAbbr = MONTH_ABBRS[new Date().getMonth()];
   const [budgetMonth, setBudgetMonth] = useState(currentMonthAbbr);
-  const { data: session } = useAuthSession();
 
-  const { isDark } = useAuthTheme();
-  const iconColor = isDark ? "#fff" : "#000";
+  const { data: sessionData } = useAuthSession();
+  const user = (sessionData as any)?.data?.user;
+  const userName = user?.name || "User";
+  const userImage = user?.image;
+  const { iconColor } = useThemeColors();
 
-  const user = session?.data?.user;
+  const monthDateRange = useMemo(() => {
+    const now = new Date();
+    const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endDate = new Date(
+      now.getFullYear(),
+      now.getMonth() + 1,
+      0,
+      23,
+      59,
+      59,
+    );
+    return {
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+    };
+  }, []);
 
-  const insets = useSafeAreaInsets();
+  const { data: summaryResponse } = useTransactionSummary(monthDateRange);
+  const summary = (summaryResponse as any)?.data as
+    | {
+        income: number;
+        expense: number;
+        balance: number;
+        transactionCount: number;
+      }
+    | undefined;
+
+  const monthlyIncome = summary?.income ?? 0;
+  const monthlyExpense = summary?.expense ?? 0;
+
+  const { data: walletsResponse } = useGetWallets();
+  const wallets = walletsResponse?.data ?? [];
+
+  const totalBalance = useMemo(() => {
+    return wallets.reduce(
+      (sum: number, w: any) => sum + Number(w.balance ?? 0),
+      0,
+    );
+  }, [wallets]);
+
+  const budgetDateRange = useMemo(() => {
+    const monthIndex = MONTH_ABBRS.indexOf(budgetMonth);
+    if (monthIndex === -1) return undefined;
+
+    const year = new Date().getFullYear();
+    const startDate = new Date(year, monthIndex, 1);
+    const endDate = new Date(year, monthIndex + 1, 0, 23, 59, 59);
+    return {
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+    };
+  }, [budgetMonth]);
+
+  const { data: budgetSummaryResponse } =
+    useTransactionSummary(budgetDateRange);
+  const budgetSummary = budgetSummaryResponse?.data as
+    { income: number; expense: number; balance: number } | undefined;
+  const budgetAvailable =
+    (budgetSummary?.income ?? 0) - (budgetSummary?.expense ?? 0);
+
+  const { data: invoicesResponse, isLoading: isLoadingInvoices } = useInvoices({
+    limit: 3,
+  });
+  const recentInvoices = invoicesResponse?.data ?? [];
 
   return (
     <Container className="p-4 md:p-6" isScrollable={false}>
@@ -54,9 +141,9 @@ export default function HomePage() {
       >
         <View className="flex-row items-center justify-between mb-8 w-full pt-1">
           <View className="flex-row items-center gap-2.5">
-            {user?.image ? (
+            {userImage ? (
               <Image
-                source={{ uri: user.image }}
+                source={{ uri: userImage }}
                 className="w-12.5 h-12.5 rounded-[40px]"
                 resizeMode="cover"
               />
@@ -66,11 +153,10 @@ export default function HomePage() {
                   className="text-[22px] text-brand-white"
                   style={{ fontFamily: ONBOARDING_FONT_FAMILY.bold }}
                 >
-                  {user?.name.charAt(0).toUpperCase()}
+                  {userName.charAt(0).toUpperCase()}
                 </Text>
               </View>
             )}
-
             <View className="flex-col justify-center gap-y-1">
               <Text
                 className="text-[14px] leading-3.5 text-brand-black dark:text-brand-white"
@@ -82,10 +168,11 @@ export default function HomePage() {
                 className="text-h4 leading-5 text-brand-black dark:text-brand-white"
                 style={{ fontFamily: "PlusJakartaSans_700Bold" }}
               >
-                {user?.name.toUpperCase()}
+                {userName}
               </Text>
             </View>
           </View>
+
           <View className="flex-row items-center gap-x-2.5">
             <Pressable className="w-12.5 h-12.5 rounded-[40px] bg-brand-flashwhite dark:bg-brand-green-800 items-center justify-center">
               <GeneralSearch color={iconColor} width={23} height={23} />
@@ -100,11 +187,11 @@ export default function HomePage() {
 
         <View className="flex-col w-full gap-y-2.5 mb-7">
           <CashoryCardBalance
-            totalBalance={5000}
-            earned={5000}
-            spent={2000}
-            available={3000}
-            savings={5000 - 2000}
+            totalBalance={totalBalance}
+            earned={monthlyIncome}
+            spent={monthlyExpense}
+            available={totalBalance}
+            savings={monthlyIncome - monthlyExpense}
           />
           <Pressable
             className="w-full bg-brand-green-500 items-center justify-center p-4 min-h-14.25"
@@ -118,40 +205,41 @@ export default function HomePage() {
             </Text>
           </Pressable>
         </View>
+
         <View className="flex-col w-full gap-y-2.5 mb-7">
           <CashoryIncomeExpense
-            incomeAmount={1000}
-            expenseAmount={1500}
-            dateLabel="This Month"
+            incomeAmount={monthlyIncome}
+            expenseAmount={monthlyExpense}
+            dateLabel="This month"
           />
           <CashoryBudgetPlanCard
-            month="Oct"
+            month={budgetMonth}
             onMonthChange={setBudgetMonth}
-            availableCash={1500}
+            availableCash={budgetAvailable}
           />
         </View>
-        {/*
-        <View className="flex-col w-full gap.y-2.5 mb-7">
+
+        <View className="flex-col w-full gap-y-2.5 mb-7">
           <View className="flex-row items-end justify-between w-full mb-1">
             <Text
-              className="text-xl leading-6.25 text-brand-black dark:text-brand-white"
-              style={{
-                fontFamily: "OpenSans_700Bold",
-              }}
+              className="text-xl leading leading-6.25 text-brand-black dark:text-brand-white"
+              style={{ fontFamily: "PlusJakartaSans_700Bold" }}
             >
               Invoice
             </Text>
-            <Link href={"/invoices"} asChild>
+
+            <Link href="/invoices" asChild>
               <Pressable>
                 <Text
                   className="text-[14px] leading-3.75 text-brand-black dark:text-brand-white"
-                  style={{ fontFamily: "OpenSans_400Regular" }}
+                  style={{ fontFamily: "PlusJakartaSans_400Regular" }}
                 >
                   See all
                 </Text>
               </Pressable>
             </Link>
           </View>
+
           {isLoadingInvoices ? (
             <View className="items-center py-6">
               <ActivityIndicator size="small" />
@@ -177,7 +265,7 @@ export default function HomePage() {
               />
             ))
           )}
-        </View>*/}
+        </View>
       </ScrollView>
     </Container>
   );

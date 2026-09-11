@@ -3,13 +3,12 @@ import React from "react";
 import { Card, cn, Select } from "heroui-native";
 import { GeneralWallet } from "../ui/icons/general-wallet";
 import { GeneralChevronDo } from "../ui/icons/general-chevron.do";
-import { MonthAbbr } from "@/app/(drawer)/(tabs)";
 
 interface CashoryBudgetPlanCardProps {
-  month: MonthAbbr;
+  month: string;
   availableCash: string | number;
   months?: string[]; // Optional array of months for the dropdown
-  onMonthChange?: (month: MonthAbbr) => void;
+  onMonthChange?: (month: string) => void;
   className?: string; // Container additional styling
 }
 
@@ -56,7 +55,7 @@ export default function CashoryBudgetPlanCard({
             onValueChange={(selected) => {
               if (selected && onMonthChange) {
                 // Single selection mode gives { value, label } payload
-                onMonthChange((selected as { value: MonthAbbr }).value);
+                onMonthChange((selected as { value: string }).value);
               }
             }}
             presentation="bottom-sheet"
