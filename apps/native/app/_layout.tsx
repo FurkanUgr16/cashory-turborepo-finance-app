@@ -25,11 +25,15 @@ function StackLayout() {
       <Stack.Screen name="(drawer)" />
       <Stack.Screen name="sign-up" />
       <Stack.Screen name="sign-in" />
-      <Stack.Screen name="onboarding" />
-      <Stack.Screen
-        name="modal"
-        options={{ title: "Modal", presentation: "modal" }}
-      />
+      <Stack.Screen name="invoices" />
+      <Stack.Screen name="category" />
+      <Stack.Screen name="wallet" />
+      <Stack.Screen name="budget" />
+      <Stack.Screen name="transaction/add" />
+      <Stack.Screen name="transaction/[id]" />
+      <Stack.Screen name="notifications" />
+      <Stack.Screen name="invoice/add" />
+      <Stack.Screen name="invoice/[id]" />
     </Stack>
   );
 }
